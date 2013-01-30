@@ -1,0 +1,100 @@
+<html>
+  <head>
+    <title>Markdown editor</title>
+    <link rel="stylesheet" href="https://raw.github.com/isagalaev/highlight.js/master/src/styles/github.css">
+    <style type="text/css">
+      body {
+        background: #fcfcfc;
+        font-family: Futura, "Trebuchet MS", Arial, sans-serif;
+      }
+      #editor, #preview {
+        background: #fff;
+        padding: 1%;
+        width: 48%;
+        float: left;
+        min-height: 80%;
+      }
+      #controls {
+        text-align: center;
+        margin-bottom: 20px;
+      }
+      #editor {
+        font-size: 1.5em;
+        border: none;
+        outline: none;
+        resize: none;
+        margin-right: 0.5%;
+      }
+      #preview {
+        margin-left: 0.5%;
+      }
+      #credits {
+        clear: both;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="controls">
+      <input type="text" id="filename" />
+      <button type="button" id="save">Save</button>
+      <button type="button" id="load">Load</button>
+    </div>
+    <textarea id="editor" autofocus></textarea>
+    <div id="preview"></div>
+
+    <div id="credits">
+      <p>Created by <a href="https://github.com/walle">Fredrik Wallgren</a></p>
+      <p>Code available at <a href="https://github.com/walle/markdowneditor">github.com/walle/markdowneditor</a></p>
+    </div>
+    <a href="https://github.com/walle/markdowneditor"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub"></a>
+    <script src="https://raw.github.com/coreyti/showdown/master/compressed/showdown.js"></script>
+    <script src="http://yandex.st/highlightjs/7.3/highlight.min.js"></script>
+    <script type="text/javascript">
+      window.onload = function () {
+        var converter = new Showdown.converter();
+        var editor = document.getElementById('editor');
+        var preview = document.getElementById('preview');
+        var filenameInput = document.getElementById('filename');
+        var saveButton = document.getElementById('save');
+        var loadButton = document.getElementById('load');
+
+        var redraw = function () {
+          preview.innerHTML = converter.makeHtml(editor.value);
+          var aCodes = preview.getElementsByTagName('pre');
+          for (var i = 0; i < aCodes.length; i++) {
+            hljs.highlightBlock(aCodes[i]);
+          }
+        };
+
+        saveButton.onclick = function () {
+          var filename = filenameInput.value;
+          if (filename.length > 0) {
+            localStorage['markdowneditor.file.' + filename] = editor.value;
+          }
+        };
+
+        loadButton.onclick = function () {
+          var filename = filenameInput.value;
+          if (filename.length > 0) {
+            editor.value = localStorage['markdowneditor.file.' + filename];
+            redraw();
+          }
+        };
+
+        editor.onkeyup = redraw;
+      };
+    </script>
+    <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-10800077-8']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+  </body>
+</html>

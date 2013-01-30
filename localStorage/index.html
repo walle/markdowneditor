@@ -1,0 +1,80 @@
+<html>
+  <head>
+    <title>Markdown editor</title>
+    <link rel="stylesheet" href="https://raw.github.com/isagalaev/highlight.js/master/src/styles/github.css">
+    <style type="text/css">
+      body {
+        background: #fcfcfc;
+        font-family: Futura, "Trebuchet MS", Arial, sans-serif;
+      }
+      #editor, #preview {
+        background: #fff;
+        padding: 1%;
+        width: 48%;
+        float: left;
+        min-height: 80%;
+      }
+      #controls {
+        text-align: center;
+        margin-bottom: 20px;
+      }
+      #editor {
+        font-size: 1.5em;
+        border: none;
+        outline: none;
+        resize: none;
+        margin-right: 0.5%;
+      }
+      #preview {
+        margin-left: 0.5%;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="controls">
+      <input type="text" id="filename" />
+      <button type="button" id="save">Save</button>
+      <button type="button" id="load">Load</button>
+    </div>
+    <textarea id="editor" autofocus></textarea>
+    <div id="preview"></div>
+
+    <script src="https://raw.github.com/coreyti/showdown/master/compressed/showdown.js"></script>
+    <script src="http://yandex.st/highlightjs/7.3/highlight.min.js"></script>
+    <script type="text/javascript">
+      window.onload = function () {
+        var converter = new Showdown.converter();
+        var editor = document.getElementById('editor');
+        var preview = document.getElementById('preview');
+        var filenameInput = document.getElementById('filename');
+        var saveButton = document.getElementById('save');
+        var loadButton = document.getElementById('load');
+
+        var redraw = function () {
+          preview.innerHTML = converter.makeHtml(editor.value);
+          var aCodes = preview.getElementsByTagName('pre');
+          for (var i = 0; i < aCodes.length; i++) {
+            hljs.highlightBlock(aCodes[i]);
+          }
+        };
+
+        saveButton.onclick = function () {
+          var filename = filenameInput.value;
+          if (filename.length > 0) {
+            localStorage['markdowneditor.file.' + filename] = editor.value;
+          }
+        };
+
+        loadButton.onclick = function () {
+          var filename = filenameInput.value;
+          if (filename.length > 0) {
+            editor.value = localStorage['markdowneditor.file.' + filename];
+            redraw();
+          }
+        };
+
+        editor.onkeyup = redraw;
+      };
+    </script>
+  </body>
+</html>
